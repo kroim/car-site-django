@@ -1,0 +1,52 @@
+{% extends 'administrator/layout/layout.html' %}
+{% block 'title' %}Contacts / Requests{% endblock %}
+{% block 'main' %}
+
+    <table class="table table-bordered table-hover dataTable" role="grid">
+        <thead>
+        <tr role="row">
+            <th class="sorting_asc" tabindex="0" rowspan="1" colspan="1" aria-sort="ascending">First Name</th>
+            <th class="sorting" tabindex="0" rowspan="1" colspan="1">Last Name</th>
+            <th class="sorting" tabindex="0" rowspan="1" colspan="1">Email</th>
+            <th class="sorting" tabindex="0" rowspan="1" colspan="1">Phone</th>
+            <th class="sorting" tabindex="0" rowspan="1" colspan="1">Comment</th>
+            <th class="sorting" tabindex="0" rowspan="1" colspan="1">Time</th>
+            <th class="sorting" tabindex="0" rowspan="1" colspan="1">Car</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for contact in contacts %}
+            {% if forloop.counter|divisibleby:2 == 0 %}
+            <tr role="row" class="even">
+            {% else %}
+            <tr role="row" class="odd">
+            {% endif %}
+                <td class="sorting_1">
+                    {{ contact.first_name }}
+                </td>
+                <td>
+                    {{ contact.last_name }}
+                </td>
+                <td>
+                    {{ contact.email }}
+                </td>
+                <td>
+                    {{ contact.phone_number }}
+                </td>
+                <td>
+                    {{ contact.comment }}
+                </td>
+                <td style="font-size: 13px;">
+                    {{ contact.created_at }}
+                </td>
+                <td>
+                    <a href="{% url 'search_car' %}?stock_number={{ contact.car.stock_number }}">View</a>
+                </td>
+            </tr>
+          {% endfor %}
+
+
+        </tbody>
+    </table>
+
+{% endblock %}

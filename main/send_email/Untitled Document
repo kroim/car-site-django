@@ -1,0 +1,18 @@
+<!DOCTYPE html> 
+<html><body>
+<a href="carboi.com"><img src="/static/img/carboi_logo.png" alt="LOGO" style="width:508px;height:94px;border:0"></a>
+<h2>Lead Submission From CARboi</h2>
+<h3><b>Contact</b></h3>
+    <b>First Name:</b> EXAMPLE_CLIENT_FN
+    <b>Boland Name:</b> EXAMPLE_CLIENT_LN
+    <b>Email:</b> example@example.com
+    <p><b>Location:</b> EXAMPLE_CITY</p>
+<h3>Comments</h3>
+    <p>I am interested in your [YEAR] [MAKE] [MODEL] [TRIM]. You can reach me at example@example.com. Thank You!</p>
+<h3>Listing</h3>
+    <p><b>VIN:</b> VIN_EXAMPLE</p>
+    <p><b>Vehicle:</b> [YEAR] [MAKE] [MODEL] [TRIM]</p>
+    <p><b>Stock Number:</b> SJbmw714012</p>
+    <p><b>Listing:</b> <a href="google.com">EXAMPLE_LINK</a></p>
+    <p><b>Listed Price:</b> $1,000,000</p>
+</body></html>

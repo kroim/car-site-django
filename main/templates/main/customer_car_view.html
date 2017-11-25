@@ -1,0 +1,220 @@
+{% extends 'main/layout/layout.html' %}
+{% load staticfiles %}
+{% load normalize_price %}
+{% load int_tags %}
+{% load scale %}
+{% load is_superuser %}
+
+{% block 'title' %}Customer Link | {{ car.car_model }} {{ block.super }}{% endblock %}
+
+{% block 'main' %}
+    <div class="container" style="border: 1px solid #ccc; border-radius: 10px; padding: 0px 25px 0px 25px;">
+        {% if car.is_available_eligible %}
+            <header style="margin-top: 50px;">
+                <img src="{% static 'img/carboi_logo.png' %}" height="50px"/>
+            </header>
+
+            <br><br>
+
+            <h6 style="color: white; background-color: #0391FD; border: 1px solid #eee; padding: 10px 10px;">Vehicle
+                Details</h6>
+            <br>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <ul class="list-group">
+                        <li class="list-group-item">Make: {{ car.make }}</li>
+                        <li class="list-group-item">Model: {{ car.car_model }}</li>
+                        <li class="list-group-item">Year: {{ car.year }}</li>
+                        <li class="list-group-item">Price:
+                            ${{ car.final_price|normalize_price|thousands_separator }}</li>
+                    </ul>
+                </div>
+                <div class="col-md-4" style="text-align: center;">
+                    <div>
+                        Auto Grade
+                    </div>
+                    <div style="position: relative; display: inline-block;">
+                        <img src="{% static 'img/grade.png' %}" height="200px;"/>
+                        <span style="font-size: 27px; font-weight: bold; color: #35B729; position: absolute; top: 56px; left:79px;">{{ car.grade|grade_scale }}</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-group">
+                        <li class="list-group-item">VIN : {{ car.vin }}</li>
+                        <li class="list-group-item">Mileage: {{ car.cardetail.miles|human_format }}</li>
+                        <li class="list-group-item">Warranty: Yes</li>
+                        <li class="list-group-item">Stock Number: {{ car.stock_number }}</li>
+                    </ul>
+                </div>
+            </div>
+            <br>
+
+            {#            <h3 style="margin-top:50px; margin-bottom:25px;">#}
+            {#                {{ car.car_model }}#}
+            {#            </h3>#}
+
+            <br><br>
+
+            {% if car.image_set.all|length > 0 %}
+                <h6 style="color: white; background-color: #0391FD; border: 1px solid #eee; padding: 10px 10px">
+                    Vehicle Images
+                </h6>
+                <br>
+
+                {% for img in car.image_set.all %}
+                    {% if not user|is_superuser and img.show_to_customer %}
+                        <a href="{{ img.link }}" target="_blank">
+                            <img src="{{ img.link }}" width="150px"/>
+                        </a>
+                    {% elif user|is_superuser %}
+                        <div style="display: inline-block;">
+                            <div style="text-align: center; margin-bottom: 15px;">
+                                <a href="{{ img.link }}" target="_blank">
+                                    <img src="{{ img.link }}" width="150px"
+                                         style="display: block; margin-bottom: 10px;"/>
+                                </a>
+                                <form action="#" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="img_id" value="{{ img.id }}"/>
+                                    {% if img.show_to_customer %}
+                                        <input type="hidden" name="action" value="remove"/>
+                                        <button type="submit" class="btn btn-danger"
+                                                style="display: block; width: 100%; cursor: pointer;">Remove
+                                        </button>
+                                    {% else %}
+                                        <input type="hidden" name="action" value="add"/>
+                                        <button type="submit" class="btn btn-success"
+                                                style="display: block; width: 100%; cursor: pointer;">Add
+                                        </button>
+                                    {% endif %}
+                                </form>
+                            </div>
+                        </div>
+                        {#                        <a href="{{ img.link }}" target="_blank">#}
+                        {#                            #}
+                        {#                        </a>#}
+                        {#                        <button>Remove This</button>#}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            {% if vehicle_options|length > 0 %}
+                <br><br><br>
+                <div>
+                    <h6 style="color: white; background-color: #0391FD; border: 1px solid #eee; padding: 10px 10px">
+                        Vehicle Options
+                    </h6>
+                    <table class="table table-bordered">
+                        {% for vehicle_option in vehicle_options %}
+                            {% if forloop.counter0|divisibleby:3 %}
+                                <tr>
+                            {% endif %}
+                        <td>
+                    <span style="font-size: 14px;">
+                        {{ vehicle_option }}
+                    </span>
+                        </td>
+                        {% if forloop.counter0|add:1|divisibleby:3 %}
+                            </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </table>
+                    <br>
+                </div>
+            {% endif %}
+
+            {% if car.cardetail.value_added_options %}
+                <span style="font-weight: bold;">Value Added Options:</span> {{ car.cardetail.value_added_options }}
+                <br>
+            {% endif %}
+
+            {% if car.carfax %}
+                <br>
+                <br>
+                <h6 style="color: white; background-color: #0391FD; border: 1px solid #eee; padding: 10px 10px;">
+                    Carfax
+                </h6>
+                <div style="font-size: 13px; margin-left: 6px;">
+                    <i class="fa fa-dot-circle-o"></i> Please ask your Account Manager for a complete copy of the report
+                </div>
+                <br>
+                <table class="table">
+                    <tbody>
+                    {% if car.carfax.ownership_text %}
+                        <tr>
+                            <td>{{ car.carfax.ownership_number }}</td>
+                            <td>{{ car.carfax.ownership_text }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if car.carfax.title_brand_text %}
+                        <tr>
+                            <td>
+                                {% if car.carfax.title_brand_status == 'Green Check Mark' %}
+                                    <img src="http://media.carfax.com/img/auction/blt_check.gif"/>
+                                {% elif car.carfax.title_brand_status == 'Yellow Warning' %}
+                                    <img src="http://media.carfax.com/img/auction/blt_ind.gif"/>
+                                {% endif %}
+                            </td>
+                            <td>{{ car.carfax.title_brand_text }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if car.carfax.damage_text %}
+                        <tr>
+                            <td>
+                                {% if car.carfax.damage_status == 'Green Check Mark' %}
+                                    <img src="http://media.carfax.com/img/auction/blt_check.gif"/>
+                                {% elif car.carfax.damage_status == 'Yellow Warning' %}
+                                    <img src="http://media.carfax.com/img/auction/blt_ind.gif"/>
+                                {% endif %}
+                            </td>
+                            <td>{{ car.carfax.damage_text }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if car.carfax.odometer_text %}
+                        <tr>
+                            <td>
+                                {% if car.carfax.odometer_status == 'Green Check Mark' %}
+                                    <img src="http://media.carfax.com/img/auction/blt_check.gif"/>
+                                {% elif car.carfax.odometer_status == 'Yellow Warning' %}
+                                    <img src="http://media.carfax.com/img/auction/blt_ind.gif"/>
+                                {% endif %}
+                            </td>
+                            <td>{{ car.carfax.odometer_text }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if car.carfax.serviceRecords_text %}
+                        <tr>
+                            <td>
+                                {% if car.carfax.serviceRecords_status == 'Green Check Mark' %}
+                                    <img src="http://media.carfax.com/img/auction/blt_check.gif"/>
+                                {% elif car.carfax.serviceRecords_status == 'Yellow Warning' %}
+                                    <img src="http://media.carfax.com/img/auction/blt_ind.gif"/>
+                                {% endif %}
+                            </td>
+                            <td>{{ car.carfax.serviceRecords_text }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if car.carfax.historyRecords_text %}
+                        <tr>
+                            <td>{{ car.carfax.historyRecords_number }}</td>
+                            <td>{{ car.carfax.historyRecords_text }}</td>
+                        </tr>
+                    {% endif %}
+
+                    </tbody>
+                </table>
+                <br><br>
+            {% endif %}
+
+            <br><br>
+            </div>
+        {% else %}
+            SOLD
+
+            {% if user|is_superuser %}
+                <div>VIN: {{ car.vin }}</div>
+                <div>link in administrator: <a href="http://carboi.com{% url 'search_car' %}?vin={{ car.vin }}">http://carboi.com{% url 'search_car' %}?vin={{ car.vin }}</a></div>
+            {% endif %}
+        {% endif %}
+{% endblock %}

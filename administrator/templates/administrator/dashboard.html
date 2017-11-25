@@ -1,0 +1,100 @@
+{% extends 'administrator/layout/layout.html' %}
+{% load is_limited_employee %}
+
+{% block 'title' %}Dashboard{% endblock %}
+{% block 'main' %}
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+        <div class="col-lg-4 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+                <div class="inner">
+                    <h3>{{ cars_count }}</h3>
+                    <p>Total # of Cars on Website</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-model-s"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        {% if not user|is_limited_employee %}
+        <!-- ./col -->
+        <div class="col-lg-4 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h3>{{ damage_count }}</h3>
+
+                    <p># of Damages</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-wrench"></i>
+                </div>
+                <a href="{% url 'fill_damages' %}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        {% endif %}
+        <!-- ./col -->
+        <div class="col-lg-4 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-yellow">
+                <div class="inner">
+                    <h3>{{ contacts_count }}</h3>
+
+                    <p>Total # of Contacts</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-chatbubbles"></i>
+                </div>
+                <a href="{% url 'contacts' %}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+{#        <!-- ./col -->#}
+{#        <div class="col-lg-4 col-xs-6">#}
+{#            <!-- small box -->#}
+{#            <div class="small-box bg-red">#}
+{#                <div class="inner">#}
+{#                    <h3>65</h3>#}
+{##}
+{#                    <p>Unique Visitors</p>#}
+{#                </div>#}
+{#                <div class="icon">#}
+{#                    <i class="ion ion-pie-graph"></i>#}
+{#                </div>#}
+{#                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>#}
+{#            </div>#}
+{#        </div>#}
+{#        <!-- ./col -->#}
+    </div>
+    
+    {% if not user|is_limited_employee %}
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-4 col-xs-4">
+            <h4>
+                Crawlers Status
+            </h4>
+            <ul class="list-group">
+            {% for crawler in crawlers %}
+                <li class="list-group-item">
+                    <span>{{ crawler.name }}:</span>
+                    {% if crawler.status == "RUNNING" %}
+                    <span style="color: orangered">
+                        {{ crawler.status }}
+                    </span>
+                    <span>
+                        (Started at {{ crawler.last_run }})
+                    </span>
+                    {% else %}
+                    <span>
+                        {{ crawler.status }}
+                    </span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

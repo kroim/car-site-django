@@ -1,0 +1,87 @@
+{% extends 'administrator/layout/layout.html' %}
+{% load is_limited_employee %}
+{% load scale %}
+
+{% block 'title' %}{{ request.GET.site }} Car List{% endblock %}
+{% block 'main' %}
+    <div class="container">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Car model</th>
+                <th>VIN</th>
+                <th>Grade</th>
+                <th>Status</th>
+                <th>Make</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+                <th>View</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for car in cars %}
+                <tr>
+                    <td>
+                        {{ forloop.counter }}
+                    </td>
+                    <td>
+                        {{ car.car_model }}
+                    </td>
+                    <td>
+                        {{ car.vin }}
+                    </td>
+                    <td>
+                        {% if not user|is_limited_employee %}
+                        {{ car.grade }}
+                        {% else %}
+                        {{ car.grade|grade_scale }}
+                        {% endif %}
+
+                    </td>
+                    <td>
+                        {% if car.is_rejected and car.is_it_available %}
+                            <span style="color: red;">Rejected
+                        {% elif not car.eligible_to_display and car.is_it_available %}
+                            <span style="color: burlywood;">Unresolved damages
+                        {% elif car.is_it_available %}
+                            <span style="color: green;">Available
+                        {% else %}
+                            <span style="color: darkred;"> ---
+                        {% endif %}
+
+                        {% if car.removed_permanently %}
+                            <span style="color: red;">(REMOVED PERMANENTLY)</span>
+                        {% endif %}
+
+                        {% if car.remain_permatently %}
+                            <span style="color: green;">(KEEP FOREVER)</span>
+                        {% endif %}
+
+                        {% if car.remain_until %}
+                            <span style="color: green;">(Avail till {{ car.remain_until }})</span>
+                        {% endif %}
+                            </span>
+                    </td>
+                    <td>
+                        {{ car.make }}
+                    </td>
+                    <td>
+                        {{ car.created_at }}
+                    </td>
+                    <td>
+                        {% if car.last_updated_time != None %}
+                        {{ car.last_updated_time }}
+                        {% else %}
+                        ---
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'search_car' %}?id={{ car.id }}">View Car</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

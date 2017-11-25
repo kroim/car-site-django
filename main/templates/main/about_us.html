@@ -1,0 +1,104 @@
+{% extends 'main/layout/layout.html' %}
+{% load staticfiles %}
+
+{% block 'title' %}About Us {{ block.super }}{% endblock %}
+
+{% block 'main' %}
+    <div class="wide-title aboutus-wide-title">
+        <div class="wide-transparent-layer"></div>
+        <h1>
+            About Us
+        </h1>
+    </div>
+    <div class="container">
+        <div class="aboutus-top-notes">
+            <h2>We are a small team with a big dream</h2>
+            <div>
+                To change the way cars are bought and sold - by bringing trust and simplicity back to car market place.
+            </div>
+        </div>
+    </div>
+    <div class="team-members-section1">
+        <div class="container">
+            <h3 class="aboutus-title">
+                Your Dedicated Heros
+            </h3>
+            <div class="team-member-wrapper row">
+                <div class="col-md-6 team-member">
+                    <img class="team-member-img" src="{% static 'img/team/Shaun.jpeg' %}" />
+                    <div class="team-member-title">
+                        Shaun
+                    </div>
+                    <div class="team-member-desc">
+                        Shaun is a former Financial Advisor and is obsessed with saving people time and money! Don't believe us! Give him a try!
+                    </div>
+                </div>
+                <div class="col-md-6 team-member">
+                    <img class="team-member-img" src="{% static 'img/team/Amir.jpeg' %}" />
+                    <div class="team-member-title">
+                        Amir
+                    </div>
+                    <div class="team-member-desc">
+                        Amir is a CarboiGuru with many years of experience in finding you the best car at the lowest price!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="team-members-section2">
+        <div class="container">
+            <h3 class="aboutus-title">
+                Your Lead Inspectors
+            </h3>
+            <div class="team-member-wrapper row">
+                <div class="col-md-6 team-member">
+                    <img class="team-member-img" src="{% static 'img/team/Jessica.jpg' %}" />
+                    <div class="team-member-title">
+                        Jessica
+                    </div>
+                    <div class="team-member-desc">
+                        Jessica is a car enthusiast and a perfectionist making sure your car is in 10/10 condition before delivery. She likes to hike and play tennis on her free time.
+                    </div>
+                </div>
+                <div class="col-md-6 team-member">
+                    <img class="team-member-img" src="{% static 'img/team/Riley.jpg' %}" />
+                    <div class="team-member-title">
+                        Riley
+                    </div>
+                    <div class="team-member-desc">
+                        Riley has been around cars for more than 10 years. From salesperson to car repariman and inspector at other startups, he brings the right vibe and energy to bring excellence to the inspection process.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="team-members-section3">
+        <div class="container">
+
+            <h3 class="aboutus-title">
+                Back End Guys
+            </h3>
+            <div class="team-member-wrapper row">
+                <div class="col-md-6 team-member">
+                    <img class="team-member-img" src="{% static 'img/team/Gissele.jpg' %}" />
+                    <div class="team-member-title">
+                        Gissele
+                    </div>
+                    <div class="team-member-desc">
+                        Gisele has years of experience in management and recruitment. She also loves to take care of and play around with her young kids on her spare time.
+                    </div>
+                </div>
+                <div class="col-md-6 team-member">
+                    <img class="team-member-img" src="{% static 'img/team/Shayan.jpg' %}" />
+                    <div class="team-member-title">
+                        Shayan
+                    </div>
+                    <div class="team-member-desc">
+                        An integral part of our software engineer team, Shayan brings in creative expertise in web design and back-end programming to implement our company motto : Happy Car Buying!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ block.super }}
+{% endblock %}

@@ -1,0 +1,542 @@
+{% extends 'main/layout/layout.html' %}
+{% load staticfiles %}
+{% load normalize_price %}
+{% load is_superuser %}
+{% load int_tags %}
+
+{% block 'title' %}Browse Cars {{ block.super }}{% endblock %}
+
+{% block 'main' %}
+
+<div class="fluid-container">
+    <form id="filter-form" action="#" method="get">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="filter-sidebar">
+                <div class="filter-option">
+                    <h6>Makes</h6>
+                    <select name="make" id="make-select" class="form-control">
+                        {% if request.GET.make and request.GET.make == 'all' %}
+                            <option value="all" selected>
+                                {% else %}
+                            <option value="all">
+                        {% endif %}
+                        All
+                        </option>
+                        {% for make_option in make_options %}
+                            {% if request.GET.make and request.GET.make == make_option.0 %}
+                                <option value="{{ make_option.0 }}" selected>
+                                    {% else %}
+                                <option value="{{ make_option.0 }}">
+                            {% endif %}
+                        {{ make_option.0 }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    {% if model_options %}
+                        <h6 style="margin-top: 20px">Models</h6>
+                        <select name="model" id="model-select" class="form-control">
+                            {% if request.GET.model and request.GET.model == 'all' %}
+                                <option value="all" selected>
+                                    {% else %}
+                                <option value="all">
+                            {% endif %}
+                            All
+                            </option>
+                            {% for model_option in model_options %}
+                                {% if request.GET.model and request.GET.model == model_option.name %}
+                                    <option value="{{ model_option.name }}" selected>
+                                        {% else %}
+                                    <option value="{{ model_option.name }}">
+                                {% endif %}
+                            {{ model_option.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                </div>
+
+                <div class="filter-option">
+                    <h6>Max Price</h6>
+                    <small>$</small>
+                    <input type="text" name="price" id="price-amount" class="amount" readonly>
+                    <div id="price-slider-range" class="slider"></div>
+
+                </div>
+                <div class="filter-option">
+                    <h6>Max Mileage</h6>
+                    <input type="text" name="milage" id="milage-amount" class="amount" readonly>
+                    <div id="milage-slider-range" class="slider"></div>
+                </div>
+                <div class="filter-option">
+                    <h6>Year</h6>
+                    <label class="custom-control custom-checkbox">
+                        {% if request.GET.year and request.GET.year != 'all' %}
+                            <input type="checkbox" name="year" value="all"
+                                   class="custom-control-input">
+                        {% else %}
+                            <input type="checkbox" name="year" value="all" checked
+                                   class="custom-control-input">
+                        {% endif %}
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description"><small>All</small></span>
+                    </label>
+                    {% for year_option in year_options %}
+                        <label class="custom-control custom-checkbox">
+                            {% if year_option.1 == True %}
+                                <input type="checkbox" name="year" value="{{ year_option.0|lower }}" checked
+                                       class="custom-control-input">
+                            {% else %}
+                                <input type="checkbox" name="year" value="{{ year_option.0|lower }}"
+                                       class="custom-control-input">
+                            {% endif %}
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description"><small class="year-option-label">{{ year_option.0 }}</small></span>
+                        </label>
+                    {% endfor %}
+                </div>
+                <div style="display: none;" class="filter-option">
+                    <button type="submit" class="btn btn-danger filter-button"><i class="fa fa-filter"></i> Filter
+                        Cars
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9 cars-wrapper">
+            <div class="sorting-options" style="padding: 18px 0 18px 15px;" >
+                <span>
+                    <span style="margin-right: 6px;">
+                        View
+                    </span>
+                    <span stlye="margin-right: 5px;" class="fa fa-th fa-lg"></span>
+                    <span class="fa fa-list fa-lg"></span>
+
+                </span>
+                <span style="margin-left: 35px;">
+                    <span style="margin-right: 6px;">Sort by</span>
+                    <select id="sort-select" name="sort" class="form-control" style="display: inline-block; width: 160px; font-size: 13px; height: calc(2.0rem);">
+                        {% for sort_option in sort_options %}
+
+                        {% if sort_option.0 == selected_sort %}
+                        <option value="{{ sort_option.0 }}" selected>
+                        {% else %}
+                        <option value="{{ sort_option.0 }}">
+                        {% endif %}
+                            {{ sort_option.1 }}
+                        </option>
+                        {% endfor %}
+
+
+
+                    </select>
+                </span>
+
+            </div>
+            {% for car in cars %}
+                {% if forloop.counter0|divisibleby:4 %}
+                    <div class="row row-eq-height no-gutters align-items-start">
+                {% endif %}
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-link-wrapper">
+                        <a href="{% url 'car_profile' car.id %}">
+                            <img class="card-img-top img-fluid car-image loading-image"
+                                 data-stock-image="{{ car.stock_image }}"
+                                 data-year="{{ car.year }}"
+                                 data-make="{{ car.make.fuel_name }}"
+                                 data-model="{{ car.model.fuel_name }}"
+                                 data-trim="{{ car.trim.name }}"
+                                 data-exterior="{{ car.cardetail.exterior }}"
+                                 src="{% static 'img/ajax-loader.gif' %}"
+                                 alt="{{ car.model }} Image"/>
+                        </a>
+                    </div>
+                    <div class="card-block">
+                        <h6 class="card-title">{{ car.make }} {{ car.car_model }}
+                            <small class="text-muted">{{ car.year }}</small>
+                        </h6>
+                        <p class="card-text">
+                            <small class="text-muted">{{ car.cardetail.miles|human_format }} miles</small>&nbsp;&nbsp;
+                            <small class="price">${{ car.final_price|normalize_price|thousands_separator }}</small>
+                            {% if user|is_superuser %}
+                            <div>
+                                <button class="btn btn-warning" style="font-size: 12px; margin-left: 5px;">
+                                    <a href="{% url 'search_car' %}?id={{ car.id }}" target="_blank">
+                                        A
+                                    </a>
+                                </button>
+                                <button class="btn btn-danger" style="font-size: 12px; margin-left: 5px;">
+                                    <a href="{% url 'customer_car_view' car.unique_customer_link %}?id={{ car.id }}" target="_blank">
+                                        C
+                                    </a>
+                                </button>
+                            </div>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% if forloop.counter0|add:1|divisibleby:4 %}
+                </div>
+            {% endif %}
+            {% empty %}
+                <div class="not-found-message">
+                    <i class="fa fa-warning"></i>
+                    Your search did not match any cars.
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    </form>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+        integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
+
+<script
+        src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
+        integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
+        crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+<script src="{% static 'js/common.js' %}" data-fuel-api="{{ fuel_api_key }}"></script>
+
+{% if show_toast %}
+    <script>
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-top-center",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+        toastr["success"]("Your Message has been successfully sent")
+    </script>
+{% endif %}
+
+<script>
+    $(document).on("click", ".request-details", function (e) {
+        var dialog = bootbox.dialog({
+            message: "<form action='#' method='post' class='request-forms'>\
+            {% csrf_token %}\
+            <input type='hidden' name='car_id' value='" + $(this).attr('data-car-id') + "' />\
+            <p style='margin-bottom:30px;'>Please fill out your information below and one of our Car Experts will send you Photos, Additional Details, Condition Report (152 point inspection) as well as a Free Carfax report about this vehicle.</p> \
+            <div style='display:none;' class='alert alert-danger' role='alert'>\
+                Please fill all the fields and try submitting again.\
+            </div>\
+        <table>\
+            <div class='form-group'>\
+                <input class='form-control' type='text' name='first_name' placeholder='First Name'/>\
+            </div>\
+            <div class='form-group'>\
+                <input class='form-control' type='text' name='last_name' placeholder='Last Name'/>\
+            </div>\
+            <div class='form-group'>\
+                <input class='form-control' type='number' name='phone_number' placeholder='Phone Number'/>\
+            </div>\
+            <div class='form-group'>\
+                <input class='form-control' type='email' name='email' placeholder='Email'/>\
+            </div>\
+            <div class='form-group'>\
+                <textarea style='height: 150px' class='form-control' name='comment' placeholder='Your Comment...'></textarea>\
+            </div>\
+            <button type='submit' class='btn btn-success btn-submit-request'>\
+                Send\
+            </button>\
+            <p style='font-size: 11px; margin-top: 15px;'>\
+             ** We RESPECT your privacy. Your personal information will not be used for any purposes other than intended.\
+            </p>\
+        </table>\
+        \
+    </form>",
+        });
+    });
+</script>
+
+<script>
+
+    // ================
+    // Header Nav becomes small on scroll
+
+    $(function () {
+        $('#header_nav').data('size', 'big');
+    });
+
+    $(document).scroll(function () {
+
+        loadNextPage();
+
+        if ($(document).scrollTop() > 70) {
+            if ($('#header_nav').data('size') == 'big') {
+                $('#header_nav').data('size', 'small');
+
+                $('#header_nav').stop().animate({
+                    height: '60px'
+                }, 300);
+
+                $('.navbar-brand img').stop().animate({
+                    height: '22px'
+                }, 300);
+            }
+        }
+        else if ($(document).scrollTop() < 50) {
+            if ($('#header_nav').data('size') == 'small') {
+                $('#header_nav').data('size', 'big');
+
+                $('#header_nav').stop().animate({
+                    height: '80px'
+                }, 300);
+
+                $('.navbar-brand img').stop().animate({
+                    height: '30px'
+                }, 300);
+            }
+        }
+    });
+
+
+    // ================
+
+    $(function () {
+        $("#price-slider-range").bootstrapSlider({
+            {% if request.GET.price and not request.GET.price == "80000+" %}
+                value: {{ request.GET.price }},
+            {% else %}
+                value: 80000,
+            {% endif %}
+            min: 0,
+            step: 500,
+            max: 80000,
+            slide: function (event, ui) {
+                if (ui.value == 80000)
+                    $("#price-amount").val(ui.value + "+");
+                else
+                    $("#price-amount").val(ui.value);
+            },
+        });
+
+        $("#price-slider-range").bootstrapSlider().on('slideStop', function () {
+            $('.filter-button').click();
+        });
+
+        $("#price-slider-range").bootstrapSlider().on('change', function () {
+            if ($("#price-slider-range").bootstrapSlider("getValue") == 80000)
+                $("#price-amount").val($("#price-slider-range").bootstrapSlider("getValue") + "+");
+            else
+                $("#price-amount").val($("#price-slider-range").bootstrapSlider("getValue"));
+        });
+
+        if ($("#price-slider-range").bootstrapSlider("getValue") == 80000)
+            $("#price-amount").val($("#price-slider-range").bootstrapSlider("getValue") + "+");
+        else
+            $("#price-amount").val($("#price-slider-range").bootstrapSlider("getValue"));
+    });
+
+    $(function () {
+        $("#milage-slider-range").bootstrapSlider({
+            {% if request.GET.milage and not request.GET.milage == "48000+" %}
+                value: {{ request.GET.milage }},
+            {% else %}
+                value: 48000,
+            {% endif %}
+            min: 0,
+            step: 500,
+            max: 48000,
+            slide: function (event, ui) {
+                if (ui.value == 48000)
+                    $("#milage-amount").val(ui.value + "+");
+                else
+                    $("#milage-amount").val(ui.value);
+            }
+        });
+
+        $("#milage-slider-range").bootstrapSlider().on('slideStop', function () {
+            $('.filter-button').click();
+        });
+
+        $("#milage-slider-range").bootstrapSlider().on('change', function () {
+            if ($("#milage-slider-range").bootstrapSlider("getValue") == 48000)
+                $("#milage-amount").val($("#milage-slider-range").bootstrapSlider("getValue") + "+");
+            else
+                $("#milage-amount").val($("#milage-slider-range").bootstrapSlider("getValue"));
+        });
+
+        if ($("#milage-slider-range").bootstrapSlider("getValue") == 48000)
+            $("#milage-amount").val($("#milage-slider-range").bootstrapSlider("getValue") + "+");
+        else
+            $("#milage-amount").val($("#milage-slider-range").bootstrapSlider("getValue"));
+    });
+
+    $('input[type=checkbox][name=year]').click(function (e) {
+        if ($(this).val() == 'all') {
+            if (this.checked) {
+                $('input[type=checkbox][name=year]').prop('checked', false);
+                $(this).prop('checked', true);
+            }
+        }
+        else {
+            if (this.checked) {
+                $('input[type=checkbox][name=year][value=all]').prop('checked', false);
+            }
+        }
+    });
+
+    $('input[type=checkbox][name=make]').click(function (e) {
+        if ($(this).val() == 'all') {
+            if (this.checked) {
+                $('input[type=checkbox][name=make]').prop('checked', false);
+                $(this).prop('checked', true);
+            }
+        }
+        else {
+            if (this.checked) {
+                $('input[type=checkbox][name=make][value=all]').prop('checked', false);
+            }
+        }
+    });
+
+    $('#make-select').change(function () {
+        $('#model-select option').removeAttr('selected');
+        $('.filter-button').click();
+    });
+    $('#model-select').change(function () {
+        $('.filter-button').click();
+    });
+    $('input[name=year]').click(function () {
+        $('.filter-button').click();
+    });
+    $('#sort-select').change(function () {
+        $('.filter-button').click();
+    });
+
+    $(document).ready(function(){
+        load_images();
+        loadNextPage();
+    });
+
+</script>
+
+<script>
+
+    var page = 2;
+    var loading_cars = false;
+
+    function loadNextPage() {
+{#        alert($(window).scrollTop() + $(window).height());#}
+{#        alert($(document).height() - 150);#}
+        // Reach bottom
+        if ($(window).scrollTop() + $(window).height() > $(document).height() - 150) {
+            if (loading_cars == false ) {
+                // Load new Cars
+                $.ajax({
+                    url: "{% url 'ajax_load_cars' %}?" + $('#filter-form').serialize(),
+                    type: "post",
+                    data: "page=" + page + "&csrfmiddlewaretoken={{csrf_token}}",
+                    beforeSend: function () {
+                        loading_cars = true;
+                    },
+                    success: function (data) {
+                        if (data.status == 200) {
+{#                            console.log("page:",  page);#}
+
+                            var append_element = '';
+                            for (var i in data.content['cars']) {
+                                var car = data.content['cars'][i];
+                                var extra_admin_info = '';
+
+                                {% if user|is_superuser %}
+                                    var unique_customer_link = '{% url 'customer_car_view' 111111111111111 %}';
+                                    unique_customer_link = unique_customer_link.replace('111111111111111', car['unique_customer_link'] )
+                                    extra_admin_info = '\
+                                    <div>\
+                                        <button class="btn btn-warning" style="font-size: 12px; margin-left: 5px;">\
+                                            <a href="{% url 'search_car' %}?id=' + car['id'] + '" target="_blank">\
+                                                A\
+                                            </a>\
+                                        </button>\
+                                        <button class="btn btn-danger" style="font-size: 12px; margin-left: 5px;">\
+                                            <a href="' + unique_customer_link + '" target="_blank">\
+                                                C\
+                                            </a>\
+                                        </button>\
+                                    </div>\
+                                    ';
+                                {% endif %}
+
+                                if (i % 4 == 0) {
+                                    append_element += '<div class="row row-eq-height no-gutters align-items-start">';
+                                }
+
+                                var model = car['model__fuel_name'];
+                                var make = car['make__fuel_name'];
+
+                                append_element += '<div class="col-md-3">\
+                                    <div class="card">\
+                                        <div class="card-link-wrapper">\
+                                            <a href="' + "{% url 'car_profile' '0000000000' %}".replace("0000000000", car["id"]) + '">\
+                                                <img class="card-img-top img-fluid car-image loading-image"\
+                                                     data-stock-image="' + car['stock_image'] + '"\
+                                                     data-year="' + car['year'] + '"\
+                                                     data-make="' + make + '"\
+                                                     data-model="' + model + '"\
+                                                     data-trim="' + car['trim'] + '"\
+                                                     data-exterior="' + car['cardetail__exterior'] + '"\
+                                                     src="{% static 'img/ajax-loader.gif' %}"\
+                                                     alt="' + car['model'] + ' Image"/>\
+                                            </a>\
+                                        </div>\
+                                        <div class="card-block">\
+                                            <h6 class="card-title">' + car['make__name'] + ' ' + car['car_model'] + ' &nbsp;&nbsp; <small class="text-muted">' + car['year'] + '</small></h6>\
+                                            <p class="card-text">\
+                                                <small class="text-muted"> ' + car['cardetail__miles'] + ' miles</small>\
+                                                &nbsp;&nbsp;\
+                                                <small class="price">$' + car['final_price'] + '</small>' +
+                                                extra_admin_info +
+                                            '</p>\
+                                        </div>\
+                                    </div>\
+                                </div>';
+
+                                if (i+1 % 4 == 0) {
+                                    append_element += '</div>'
+                                }
+                            }
+
+                            $('.cars-wrapper').append(append_element);
+                            page += 1;
+                        }
+                    },
+                    complete: function () {
+                        loading_cars = false;
+                        load_images();
+                    }
+                });
+            }
+        }
+    }
+
+
+</script>
+
+{% endblock %}

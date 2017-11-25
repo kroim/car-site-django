@@ -1,0 +1,96 @@
+{% extends 'main/layout/layout.html' %}
+{% load staticfiles %}
+{% load normalize_price %}
+{% load int_tags %}
+{% load scale %}
+
+{% block 'title' %}Showroom | {{ car.car_model }} {{ block.super }}{% endblock %}
+
+{% block 'head' %}
+
+{% endblock %}
+
+<div class="body-bg-color">
+{% block 'main' %}
+<div id="wrapper">
+  <div id="hero-banner" style="display: none;"></div>
+  <div id="hero-button" style="display: none;"></div>
+  <div id="buffer" style="display: none;"></div>
+  <div id="small-banner"></div>
+
+{% for car in all_cars %}
+    {% if forloop.first %}
+        <div class="row">
+    {% endif %}
+    <div class="col-lg-4">
+                <div class="showroom-card">
+                    <div class="card-link-wrapper">
+                        <a href="{% url 'customer_car_view' car.unique_customer_link %}">
+                            <img class="card-img-top img-fluid car-image loading-image"
+                                 data-stock-image="{{ car.stock_image }}"
+                                 data-year="{{ car.year }}"
+                                 data-make="{{ car.make.fuel_name }}"
+                                 data-model="{{ car.model.fuel_name }}"
+                                 data-trim="{{ car.trim.name }}"
+                                 data-exterior="{{ car.cardetail.exterior }}"
+                                 src="{% static 'img/ajax-loader.gif' %}"
+                                 alt="{{ car.model }} Image"/>
+                        </a>
+                    </div>
+                    <div class="showroom-card-block">
+                        <h6 class="card-title">{{ car.make }} {{ car.car_model }}
+                            {{ car.year }}
+                        </h6>
+                        <p class="card-text">
+                            {{ car.cardetail.miles|human_format }} miles&nbsp;&nbsp;
+                            <small class="price">${{ car.final_price|normalize_price|thousands_separator }}</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+    {% if forloop.counter|divisibleby:"3" %}
+        </div>
+        {% if not forloop.last %}
+            <div class="row">
+        {% endif %}
+    {% endif %}
+    {% if forloop.last %}
+         </div>
+    {% endif %}
+{% endfor %}
+
+
+
+{% endblock %}
+
+{% block 'js' %}
+<script src="{% static 'js/common.js' %}" data-fuel-api="{{ fuel_api_key }}">
+  
+</script>
+
+<script>
+
+
+$(document).ready(function(){
+       load_images();
+   });
+
+
+</script>
+
+<script>function load_images() {
+            $.getJSON(
+                "https://api.fuelapi.com/v1/json/vehicles/?year={{ car.year }}&make={{ car.make.fuel_name }}&model={{ car.model.fuel_name }}&api_key={{ fuel_api_key }}",
+                function (result) {
+                    var vehicle_id = result[0]['id'];
+                    {% if car.cardetail.exterior != None %}
+                    AddImagesByIdAndColor(vehicle_id, "{{ car.cardetail.exterior }}");
+                    {% else %}
+                    AddImagesByIdAndColor(vehicle_id, "white");
+                    {% endif %}
+                }
+            ).fail(function (event, jqxhr, exception) {
+                // TODO: No Image
+            });</script>
+{% endblock %}
+

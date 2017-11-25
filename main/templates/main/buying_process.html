@@ -1,0 +1,117 @@
+{% extends 'main/layout/layout.html' %}
+{% load staticfiles %}
+
+{% block 'title' %}Buying Process {{ block.super }}{% endblock %}
+
+{% block 'main' %}
+    <div class=" row wide-title buying-process-wide-title">
+        <div class="wide-transparent-layer"></div>
+        <h1>
+            Buying Process
+        </h1>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <p class="buying-process-top-note">
+                    We know buying a car online is  new to our valued customers.  This is why we have listed a step by step guide on how our process works. Please take 60 seconds to review and as always don't hesitate to call us direct at 855-966-6694 with any questions.
+                </p>
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+    </div>
+    <div class="row buying-process-row odd-row">
+        <div class="col-lg-6">
+            <div class="buying-process-desc-wrapper">
+                <div class="buying-process-desc-inner">
+                    <h2 class="buying-process-step-header">
+                        <span class="buying-process-step-label">Step 1</span>
+                        <span>Browse</span>
+                    </h2>
+                    <p class="buying-process-desc">
+                        Visit Our Buy Page and Browse our cars! Our website is Open 24/7/365. Our staff are here to help you. 8 am - 8 pm / 7 days a week 365 days a year!
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="buying-process-img-wrapper">
+                <img width="400px" src="{% static 'img/buyingprocess_step1.png' %}">
+            </div>
+        </div>
+    </div>
+    <div class="row buying-process-row even-row">
+        <div class="col-lg-6 push-lg-6">
+            <div class="buying-process-desc-wrapper">
+                <div class="buying-process-desc-inner">
+                    <h2 class="buying-process-step-header">
+                        <span class="buying-process-step-label">Step 2</span>
+                        <span>Call</span>
+                    </h2>
+                    <p class="buying-process-desc">
+                        Call Us Direct at 855-966-6694 and talk to one of our car experts!  Request photos, More Information and a free Carfax report on every vehicle!
+TIP:  Did you know you can request a copy of our 152 point Carboi Certified Inspection report!
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 pull-lg-6">
+            <div class="buying-process-img-wrapper">
+                <img width="400px" src="{% static 'img/Call.png' %}">
+            </div>
+        </div>
+    </div>
+    <div class="row buying-process-row odd-row">
+        <div class="col-lg-6">
+            <div class="buying-process-desc-wrapper">
+                <div class="buying-process-desc-inner">
+                    <h2 class="buying-process-step-header">
+                        <span class="buying-process-step-label">Step 3</span>
+                        <span>Shop</span>
+                    </h2>
+                    <p class="buying-process-desc">
+                        Found the car you want? Contact your Account Manager and secure the car  as soon as you can.
+TIP: Carboi Sells Nationwide and our cars tend to move faster than traditional dealerships! The sooner your let your account rep know which car you have fallen in love with, the better your chances of taking it home!
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="buying-process-img-wrapper">
+                <img width="400px" src="{% static 'img/shop.png' %}">
+            </div>
+        </div>
+    </div>
+    <div class="row buying-process-row even-row">
+        <div class="col-lg-6 push-lg-6">
+            <div class="buying-process-desc-wrapper">
+                <div class="buying-process-desc-inner">
+                    <h2 class="buying-process-step-header">
+                        <span class="buying-process-step-label">Step 4</span>
+                        <span>Sign</span>
+                    </h2>
+                    <p class="buying-process-desc">
+                        Pay $900 Down Payment and Sign the Purchase Contract!
+TIP:  We dont ask for full payment over the phone! You only pay $900 and have the car delivered to you!
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 pull-lg-6">
+            <div class="buying-process-img-wrapper">
+                <img width="400px" src="{% static 'img/sign.png' %}">
+            </div>
+        </div>
+    </div>
+    <div class="row buying-process-between-note-row">
+        <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <p class="buying-process-between-note">
+                    YOUR PART IS DONE! Now Sit Back and Watch Us Perform Our Magic
+                </p>
+            </div>
+        <div class="col-lg-2"></div>
+    </div>
+    {{ block.super }}
+{% endblock %}

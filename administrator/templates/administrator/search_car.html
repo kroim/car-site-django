@@ -1,0 +1,423 @@
+{% extends 'administrator/layout/layout.html' %}
+{% load is_limited_employee %}
+{% load scale %}
+{% load normalize_price %}
+{% load int_tags %}
+
+{% block 'title' %}Search Cars{% endblock %}
+{% block 'main' %}
+    <div class="container">
+        <div class="row" style="margin-top:50px;">
+            <table>
+                <form action="{% url 'search_car' %}" method="get">
+                    <tr>
+                        <td>
+                            <label>Stock Number: </label>
+                        </td>
+                        <td>
+                            <input name="stock_number" class="class=" custom-control-input""/>
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-danger">Search</button>
+                        </td>
+                    </tr>
+                </form>
+                <form action="{% url 'search_car' %}" method="get">
+                    <tr>
+                        <td>
+                            <label>VIN: </label>
+                        </td>
+                        <td>
+                            <input name="vin" class="class=" custom-control-input""/>
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-danger">Search</button>
+                        </td>
+                    </tr>
+                </form>
+            </table>
+        </div>
+        {% if car %}
+            <hr>
+            <h3 style="margin-top:50px; margin-bottom:25px;">Car Info</h3>
+            <div>
+                Title:
+                {{ car.car_model }}
+            </div>
+
+            {% if not user|is_limited_employee %}
+                <div>
+                    Source:
+                    {% if car.mo_car_id and car.available_on_mo == True %}
+                        <a href="https://{{ mo }}" target="_blank">{{ mo }}</a>,
+                    {% endif %}
+                    {% if car.ove_car_id and car.available_on_ove == True %}
+                        <a href="https://{{ ove }}" target="_blank">{{ ove }}</a>,
+                    {% endif %}
+                    {% if car.ade_car_id and car.available_on_ade == True %}
+                        <a href="https://{{ ade }}" target="_blank">{{ ade }}</a>,
+                    {% endif %}
+                    {% if car.bg_car_id and car.available_on_bg == True %}
+                        <a href="https://{{ bg }}" target="_blank">{{ bg }}</a>
+                    {% endif %}
+                </div>
+                <div>
+                    Vehicle Page:
+                    {% if car.mo_car_id and car.available_on_mo == True %}
+                        ---
+                    {% endif %}
+                    {% if car.ove_car_id and car.available_on_ove == True %}
+                        <a href="https://www.{{ ove }}/vdp/show/{{ car.ove_car_id }}"
+                           target="_blank">
+                            VIEW
+                        </a>
+                    {% endif %}
+                    {% if car.ade_car_id and car.available_on_ade == True %}
+                        <a href="https://buy.{{ ade }}/openauction/detail.html?vehicleId={{ car.ade_car_id }}"
+                           target="_blank">
+                            VIEW
+                        </a>
+                    {% endif %}
+                    {% if car.bg_car_id and car.available_on_bg == True %}
+                        <a href="https://{{ bg }}/vehicles#detail/{{ car.bg_car_id }}"
+                           target="_blank">
+                            VIEW
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+            <div>
+                <span>Customer Link:</span>
+                <a href="http://carboi.com{% url 'customer_car_view' car.unique_customer_link %}">http://carboi.com{% url 'customer_car_view' car.unique_customer_link %}</a>
+            </div>
+
+            {% if not car.is_it_available %}
+                <div style="margin:20px 0;">
+                    <span style="color:orangered">
+                        <i class="fa fa-times"></i> This vehicle is not available anymore.
+                        <div> Created at: {{ car.created_at }} </div>
+                        <div> Updated at: {{ car.last_updated_time }} </div>
+                        {% if car.mo_removed_at %}
+                            <div> mo removed at: {{ car.mo_removed_at }} </div>
+                        {% endif %}
+                        {% if car.bg_removed_at %}
+                            <div> bg removed at: {{ car.bg_removed_at }} </div>
+                        {% endif %}
+                        {% if car.ove_removed_at %}
+                            <div> ove removed at: {{ car.ove_removed_at }} </div>
+                        {% endif %}
+                        {% if car.ade_removed_at %}
+                            <div> ade removed at: {{ car.ade_removed_at }} </div>
+                        {% endif %}
+                    </span>
+                    {% if car.is_available_eligible and car.remain_until != None %}
+                        <span style="color:green"> =======> But It's Still available on Carboi until {{ car.remain_until }} </span>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <br><br>
+
+            {% if car.is_rejected == True %}
+                <div style="color: orangered; margin-bottom: 20px;">
+                    <div><i class="fa fa-times"></i> This car is rejected</div>
+                    <div>Reason: {{ car.rejection_reason }}</div>
+                </div>
+            {% endif %}
+
+            {% if car.removed_permanently == True %}
+                <div style="color: orangered; margin-bottom: 20px;">
+                    <div><i class="fa fa-times"></i> This car has been removed permanently.</div>
+                </div>
+            {% endif %}
+
+            {% if car.remain_permatently == True %}
+                <div style="color: green; margin-bottom: 20px;">
+                    <div><i class="fa fa-check"></i> This car is kept forever.</div>
+                </div>
+            {% endif %}
+
+
+
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="list-group">
+                        <li class="list-group-item">Make: {{ car.make }}</li>
+                        <li class="list-group-item">Model: {{ car.car_model }}</li>
+                        <li class="list-group-item">Year: {{ car.year }}</li>
+                        {% if not user|is_limited_employee %}
+                            <li class="list-group-item">Original Price:
+                                ${{ car.original_price }}</li>
+                        {% endif %}
+                        <li class="list-group-item">Carboi Final Price:
+                            <input id="carboi_final_price_textbox" type="number" value="{{ car.final_price }}" style="display: none"/>
+                            <span id="carboi_final_price">
+                            {% if car.final_price != None %}
+                                ${{ car.final_price|normalize_price|thousands_separator }}
+                            {% else %}
+                                No Price
+                            {% endif %}
+                            </span>
+
+                            <a id="edit_price" href="#">(Edit)</a>
+                            <a id="apply_price" href="#" style="display: none;">Apply</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="list-group">
+                        <li class="list-group-item">VIN : {{ car.vin }}</li>
+                        <li class="list-group-item">Mileage: {{ car.cardetail.miles }}</li>
+                        <li class="list-group-item">Stock Number: {{ car.stock_number }}</li>
+                        {% if not user|is_limited_employee %}
+                            <li class="list-group-item">Grade: {{ car.grade }}</li>
+                        {% else %}
+                            <li class="list-group-item">Grade: {{ car.grade|grade_scale }}</li>
+                        {% endif %}
+                        <li class="list-group-item">Location: {{ car.location }}</li>
+                    </ul>
+                </div>
+            </div>
+
+
+
+            {#        last_checking = models.DateTimeField()#}
+            {#        is_rejected = models.BooleanField(default=False)#}
+            {#        eligible_to_display = models.BooleanField(default=False)#}
+
+
+            <div style="margin: 50px 0;">
+                <h5 style="color: white; background-color: #f17424; border: 1px solid #eee; padding: 10px 10px;">
+                    Images:
+                </h5>
+
+                {% for img in car.image_set.all %}
+                    <a href="{{ img.link }}" target="_blank">
+                        <img src="{{ img.link }}" width="150px"/>
+                    </a>
+                {% endfor %}
+            </div>
+            <div style="margin: 50px 0;">
+                <h5 style="color: white; background-color: #f17424; border: 1px solid #eee; padding: 10px 10px;">
+                    Information
+                </h5>
+                <ul class="list-group">
+                    <li class="list-group-item">Vehicle Options: {{ car.cardetail.vehicle_options }}</li>
+                    <li class="list-group-item">Exterior: {{ car.cardetail.exterior }}</li>
+                    <li class="list-group-item">Interior: {{ car.cardetail.interior }}</li>
+                    <li class="list-group-item">Engine: {{ car.cardetail.engine }}</li>
+                    <li class="list-group-item">Odor: {{ car.cardetail.odor }}</li>
+                    <li class="list-group-item">MSRP: {{ car.cardetail.msrp }}</li>
+                    <li class="list-group-item">Announcements: {{ car.cardetail.announcements }}</li>
+                    <li class="list-group-item">Value Added Options: {{ car.cardetail.value_added_options }}</li>
+                    <li class="list-group-item">Warranty Date: {{ car.cardetail.warranty_date }}</li>
+                    <li class="list-group-item">Drive: {{ car.cardetail.drive }}</li>
+                    <li class="list-group-item">Keys: {{ car.cardetail.keys }}</li>
+                </ul>
+            </div>
+
+            {% if car.carfax %}
+                <div style="margin: 50px 0;">
+                    <h5 style="color: white; background-color: #f17424; border: 1px solid #eee; padding: 10px 10px;">
+                        Carfax
+                    </h5>
+                    <table class="table">
+                        <tbody>
+                        {% if car.carfax.ownership_text %}
+                            <tr>
+                                <td>{{ car.carfax.ownership_number }}</td>
+                                <td>{{ car.carfax.ownership_text }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if car.carfax.title_brand_text %}
+                            <tr>
+                                <td>
+                                    {% if car.carfax.title_brand_status == 'Green Check Mark' %}
+                                        <img src="http://media.carfax.com/img/auction/blt_check.gif"/>
+                                    {% elif car.carfax.title_brand_status == 'Yellow Warning' %}
+                                        <img src="http://media.carfax.com/img/auction/blt_ind.gif"/>
+                                    {% endif %}
+                                </td>
+                                <td>{{ car.carfax.title_brand_text }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if car.carfax.damage_text %}
+                            <tr>
+                                <td>
+                                    {% if car.carfax.damage_status == 'Green Check Mark' %}
+                                        <img src="http://media.carfax.com/img/auction/blt_check.gif"/>
+                                    {% elif car.carfax.damage_status == 'Yellow Warning' %}
+                                        <img src="http://media.carfax.com/img/auction/blt_ind.gif"/>
+                                    {% endif %}
+                                </td>
+                                <td>{{ car.carfax.damage_text }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if car.carfax.odometer_text %}
+                            <tr>
+                                <td>
+                                    {% if car.carfax.odometer_status == 'Green Check Mark' %}
+                                        <img src="http://media.carfax.com/img/auction/blt_check.gif"/>
+                                    {% elif car.carfax.odometer_status == 'Yellow Warning' %}
+                                        <img src="http://media.carfax.com/img/auction/blt_ind.gif"/>
+                                    {% endif %}
+                                </td>
+                                <td>{{ car.carfax.odometer_text }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if car.carfax.serviceRecords_text %}
+                            <tr>
+                                <td>
+                                    {% if car.carfax.serviceRecords_status == 'Green Check Mark' %}
+                                        <img src="http://media.carfax.com/img/auction/blt_check.gif"/>
+                                    {% elif car.carfax.serviceRecords_status == 'Yellow Warning' %}
+                                        <img src="http://media.carfax.com/img/auction/blt_ind.gif"/>
+                                    {% endif %}
+                                </td>
+                                <td>{{ car.carfax.serviceRecords_text }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if car.carfax.historyRecords_text %}
+                            <tr>
+                                <td>{{ car.carfax.historyRecords_number }}</td>
+                                <td>{{ car.carfax.historyRecords_text }}</td>
+                            </tr>
+                        {% endif %}
+
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+            {% if not user|is_limited_employee %}
+                <div style="margin: 50px 0;">
+                    <h5 style="color: white; background-color: #f17424; border: 1px solid #eee; padding: 10px 10px;">
+                        Damages
+                    </h5>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Damage</th>
+                            <th>Condition</th>
+                            <th>Severity</th>
+                            <th>Price added</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for damage in car.damage_set.all %}
+                            <tr>
+                                <td>{{ damage.part }}</td>
+                                <td>{{ damage.condition }}</td>
+                                <td>{{ damage.severity }}</td>
+                                {% if damage.estimated_price == None %}
+                                    <td style="background-color: lightgray">{{ damage.estimated_price }}</td>
+                                {% elif damage.estimated_price == -1 %}
+                                    <td style="background-color: orangered">{{ damage.estimated_price }}</td>
+                                {% else %}
+                                    <td>{{ damage.estimated_price }}</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+            {% if not user|is_limited_employee %}
+                <div style="margin: 50px 0;">
+                    <h5 style="color: white; background-color: orangered; border: 1px solid #eee; padding: 10px 10px;">
+                        Danger Zone
+                    </h5>
+                    {% if car.remain_permatently == False %}
+                    <form action="#" method="post" style="margin-bottom: 15px">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="remove_temp"/>
+                        <input type="hidden" name="vin" value="{{ car.vin }}"/>
+                        <button onclick="return confirm('Are you sure you want to remove it?')" type="submit"
+                                class="btn btn-danger">Remove Temporary (until next update)
+                        </button>
+                    </form>
+                    {% endif %}
+                    {% if car.removed_permanently == False and car.remain_permatently == False %}
+                        <form action="#" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="remove_perm"/>
+                            <input type="hidden" name="vin" value="{{ car.vin }}"/>
+                            <button onclick="return confirm('Are you sure you want to remove it permanently?')"
+                                    type="submit" class="btn btn-danger">Remove Permanently
+                            </button>
+                        </form>
+                    {% elif car.remain_permatently == False %}
+                        <form action="#" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="clear_remove_perm"/>
+                            <input type="hidden" name="vin" value="{{ car.vin }}"/>
+                            <button onclick="return confirm('Are you sure you want to clear removed permanently status?')"
+                                    type="submit" class="btn btn-warning">Clear Removed Permanently Status
+                            </button>
+                        </form>
+                    {% endif %}
+
+                    {% if car.remain_permatently %}
+                        <form action="#" method="post" style="margin-top: 15px">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="clear_remain_perm"/>
+                            <input type="hidden" name="vin" value="{{ car.vin }}"/>
+                            <button onclick="return confirm('Are you sure?')"
+                                    type="submit" class="btn btn-warning">Don't keep it forever!
+                            </button>
+                        </form>
+                    {% elif car.removed_permanently == False %}
+                        <form action="#" method="post" style="margin-top: 15px">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="remain_perm"/>
+                            <input type="hidden" name="vin" value="{{ car.vin }}"/>
+                            <button onclick="return confirm('Are you sure you want to keep this car forever?')"
+                                    type="submit" class="btn btn-success">Keep it forever!
+                            </button>
+                        </form>
+                    {% endif %}
+
+                </div>
+            {% endif %}
+            </div>
+        {% endif %}
+{% endblock %}
+
+
+{% block 'js' %}
+<script>
+    $("#edit_price").click(function(e){
+        e.preventDefault();
+        $("#carboi_final_price_textbox").css('display', 'inline-block');
+        $("#carboi_final_price").css('display', 'none');
+        $("#edit_price").css('display', 'none');
+        $("#apply_price").css('display', 'inline');
+    });
+
+    $("#apply_price").click(function(e){
+        e.preventDefault();
+
+        $.ajax({
+            url: "{% url 'ajax_update_car' %}",
+            method: "POST",
+            data: {
+                vin: "{{ car.vin }}",
+                final_price : $("#carboi_final_price_textbox").val(),
+                csrfmiddlewaretoken: "{{ csrf_token }}"
+            },
+            success: function(data){
+                if (data.status == 200) {
+                    $("#carboi_final_price_textbox").css('display', 'none');
+                    $("#carboi_final_price").css('display', 'inline-block');
+                    $("#edit_price").css('display', 'inline');
+                    $("#apply_price").css('display', 'none');
+                    $("#carboi_final_price").text("$" + $("#carboi_final_price_textbox").val());
+                }
+            }
+        });
+
+    });
+
+</script>
+{% endblock %}

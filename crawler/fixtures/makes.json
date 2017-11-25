@@ -1,0 +1,1 @@
+[{"model": "crawler.make", "pk": 1, "fields": {"name": "BMW"}}, {"model": "crawler.make", "pk": 2, "fields": {"name": "Mercedes Benz"}}, {"model": "crawler.make", "pk": 3, "fields": {"name": "MINI"}}]

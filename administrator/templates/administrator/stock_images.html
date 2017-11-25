@@ -1,0 +1,87 @@
+{% extends 'administrator/layout/layout.html' %}
+{% block 'title' %}Add new stock image{% endblock %}
+{% block 'main' %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <form action="#" method="post" style="margin-top: 35px;" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <p>
+                        <label style="font-weight: bold;">
+                            Image:
+                        </label>
+                        <input name="image" type="file"/>
+                    </p>
+                    <p style="display: none;">
+                        <label style="font-weight: bold;">
+                            View:
+                        </label>
+                        <select class="form-control" name="image_view">
+                            {% for k, v in image_views %}
+                                <option value="{{ k }}">{{ v }}</option>
+                            {% endfor %}
+                        </select>
+                    </p>
+                    <p>
+                        <label style="font-weight: bold;">
+                            Colors:
+                        </label>
+                        {% for color in colors %}
+                            <span style="margin-right: 10px; margin-bottom: 10px; display: inline-block;">
+                            <span>{{ color.name }}</span>
+                            <input type="checkbox" name="colors" value="{{ color.id }}"/>
+                        </span>
+                        {% endfor %}
+                    </p>
+                    <hr/>
+                    <hr/>
+                    <hr/>
+                    <p>
+                        <label style="font-weight: bold;">
+                            Model:
+                        </label>
+                        <select name="model" class="form-control">
+                            <option value="-1">--</option>
+                            {% for car_model in car_models %}
+                                <option value="{{ car_model.id }}">{{ car_model.name }}, {{ car_model.make.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </p>
+                    <p style="color: red;">
+                        ORRRRRRRRR
+                    </p>
+                    <p>
+                        <label style="font-weight: bold;">
+                            Trims:
+                        </label>
+                        {% for car_trim in car_trims %}
+                            <span style="margin-right: 10px; margin-bottom: 10px; display: inline-block;">
+                            <span>{{ car_trim.name }}, {{ car_trim.model.name }}, {{ car_trim.model.make.name }}</span>
+                            <input type="checkbox" name="trims" value="{{ car_trim.id }}"/>
+                        </span>
+                        {% endfor %}
+                    </p>
+                    <hr/>
+                    <hr/>
+                    <hr/>
+                    <p>
+                        <label style="font-weight: bold;">
+                            Years:
+                        </label>
+                        {% for year in years %}
+                            <span style="margin-right: 10px;">
+                            <span>{{ year }}</span>
+                            <input type="checkbox" name="years" value="{{ year }}"/>
+                        </span>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        <button type="submit" class="btn btn-success">
+                            Add
+                        </button>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

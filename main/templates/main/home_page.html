@@ -1,0 +1,513 @@
+{% extends 'main/layout/layout.html' %}
+{% load staticfiles %}
+{% load int_tags %}
+
+{% block 'title' %}Carboi{% endblock %}
+
+{% block 'nav' %}
+{% endblock %}
+
+{% block 'main' %}
+    <main>
+      <svg  preserveAspectRatio="xMinYMin meet" display="none" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <defs>
+          <symbol id="icon-caret" class="icon-caret" viewBox="0 0 1908 1024">
+          	<title>caret</title>
+          	<path class="path1" d="M56.832 974.15l -32.768 -33.001 953.391 -945.99 941.754 930.676 -32.721 33.094 -908.986 -898.234z"></path>
+          </symbol>
+        </defs>
+      </svg>
+    </main>
+{#    <div id="memorial-day-strip" class="alert alert-info alert-dismissible fade show" role="alert" style="margin-bottom: 0; text-align: center;">#}
+{#        <button type="button" class="close" data-dismiss="alert" aria-label="Close">#}
+{#            <span aria-hidden="true">&times;</span>#}
+{#        </button>#}
+{#        <img src="{% static 'img/USA-48.png' %}">#}
+{#        <strong>GREATEST MEMORIAL DAY SALE : <a style="color: orangered;" href="#memorial-day-section" class="memorial-day-scroll">CLICK HERE</a></strong>#}
+{#    </div>#}
+    <div class="home-big-image">
+        <div class="dark-layer"></div>
+        <div class="home-on-image-info">
+            <nav id="home-header-nav" class="navbar sticky-top navbar-toggleable-md navbar-light">
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                        data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div id="header-container" class="container">
+                    <a class="navbar-brand" style="position: relative;" href="{% url 'home_page' %}">
+                        <img src="{% static 'img/carboi_logo_white.png' %}" height="30px;"/>
+                    </a>
+                    <div class="navbar-wrapper">
+                        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'car_browse' %}">Browse Cars</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'buying_process' %}">Buying Process</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'finance' %}">Finance</a>
+                                </li>
+{#                                <li class="nav-item">#}
+{#                                    <a class="nav-link" href="{% url 'about_us' %}">About Us</a>#}
+{#                                </li>#}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'faq' %}">FAQ</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="call-us-header"><i class="fa fa-phone"></i><span>Call Us: (855) 966-6694</span></div>
+                    <div class="login-view">
+                        <div class="collapse navbar-collapse">
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    {% if user.is_authenticated %}
+                                        <a class="nav-link" href="{% url 'logout' %}">logout</a>
+                                    {% else %}
+                                        <a class="nav-link" href="{% url 'login' %}">login</a>
+                                    {% endif %}
+
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="home-big-image-content-wrapper">
+                <div class="home-on-big-image-content">Franchise dealer quality<br>$2,134 Average Savings<div style="font-size: 18px;">Pre-Owned. Pre-Screened. Delivered To Your Door. 10-Day Test Drive</div></div>
+                <div class="homepage-searchbox-wrapper">
+                    <form action="{% url 'car_browse' %}" method="get">
+                        <select name="make" class="form-control home-make-select">
+                            <option value="all">Make</option>
+                            <option value="all">All</option>
+                            {% for make in makes %}
+                            <option value="{{ make.name }}">
+                                {{ make.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <select name="model" class="form-control home-model-select">
+                            <option value="all">Model</option>
+                            <option value="all">All</option>
+                        </select>
+                        <select name="year" class="form-control home-year-select">
+                            <option value="all">Year</option>
+                            <option value="all">All</option>
+                            {% for year in years %}
+                            <option value="{{ year }}">{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn home-search-btn">
+                            Search Cars
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <a href="#home-cards-wrapper" class='icon-scroll'></a>
+        </div>
+    </div>
+    <div class="homepage-searchbox-wrapper-mobile">
+        <div class="homepage-searchbox-inner-mobile">
+            <h4>
+                Browse Cars
+            </h4>
+            <form action="{% url 'car_browse' %}" method="get">
+                <select name="make" class="form-control home-make-select">
+                    <option value="all">Make</option>
+                    <option value="all">All</option>
+                    {% for make in makes %}
+                    <option value="{{ make.name }}">
+                        {{ make.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <select name="model" class="form-control home-model-select">
+                    <option value="all">Model</option>
+                    <option value="all">All</option>
+                </select>
+                <select name="year" class="form-control home-year-select">
+                    <option value="all">Year</option>
+                    <option value="all">All</option>
+                    {% for year in years %}
+                    <option value="{{ year }}">{{ year }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn home-search-btn">
+                    Search Cars
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="fluid-container">
+        <div id="home-cards-wrapper">
+            <div class="container">
+                <div class="row row-eq-height home-cards-inner">
+                    <div class="col-sm-3 home-card">
+                        <div class="home-card-inner">
+                            <img height="55" src="{% static 'img/New_O.png' %}" />
+                            <h5 class="home-card-title">
+                                Like New
+                            </h5>
+                            <p>
+                                We only sell Pre-owned and lease return vehicles. All our cars have less than 48k miles are newer than 2014 and come with full remaining manufacturer warranty.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 home-card">
+                        <div class="home-card-inner">
+                            <img height="55" src="{% static 'img/Factory_O.png' %}" />
+                            <h5 class="home-card-title">
+                                Direct
+                            </h5>
+                            <p>
+                                We work directly with manufacturers, thereby eliminating  wholesalers , middlemen, auction houses, retailers, and car dealers. This means we pass the savings directly to you.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 home-card">
+                        <div class="home-card-inner">
+                            <img height="55" src="{% static 'img/Free Shipping_O.png' %}" />
+                            <h5 class="home-card-title">
+                                Free Delivery
+                            </h5>
+                            <p>
+                                Live in Sunny California? We will deliver the car to anywhere in California for Free!
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 home-card">
+                        <div class="home-card-inner">
+                            <img height="55" src="{% static 'img/Driving_O.png' %}" />
+                            <h5 class="home-card-title">
+                                10 Day Test Drive
+                            </h5>
+                            <p>
+                                Backed by our 10 day money back guarantee. If you are not fully satisfied we will take the car back with a full refund.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{#        <div id="memorial-day-section">#}
+{#            <div class="blue-transparent-layer"></div>#}
+{#            <div class="container">#}
+{#                <div class="memorial-day-wrapper">#}
+{#                    <h1>Memorial Day Sale</h1>#}
+{#                    <div style="font-size: 30px; margin-bottom: 7px;">#}
+{#                        We beat any franchise dealer prices by $1740 on average.#}
+{#                    </div>#}
+{#                    <div style="font-size: 18px; margin-bottom: 30px;">#}
+{#                        Show us your listing online and we will try to beat it by at least $500#}
+{#                    </div>#}
+{#                    <div style="font-size: 25px; margin-bottom: 7px;">#}
+{#                        Try us! Its Free and only takes one phone call#}
+{#                    </div>#}
+{#                    <div style="font-size: 25px; margin-bottom: 7px;">#}
+{#                        Call us now at <a href="tel:+18559666694" style="color: white;">855-966-6694</a>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+
+{#        <div class="row home-autometer-wrapper">#}
+{#            <div class="col-12 home-autometer">#}
+{#                <div class="layer"></div>#}
+{#                <div class="row home-autometer-info">#}
+{#                    <div class="col-sm-1"></div>#}
+{#                    <div class="col-sm-3" style="margin-top:50px;">#}
+{#                        <img src="{% static 'img/grade2.png' %}" />#}
+{#                        <span id="autometer-score">70</span>#}
+{#                    </div>#}
+{#                    <div class="col-sm-3"></div>#}
+{##}
+{#                    <div class="col-sm-5 home-autometer-details">#}
+{#                        <h2>#}
+{#                            <span id="auto-label">AUTO</span><span id="meter-label">METER</span>#}
+{#                        </h2>#}
+{#                        <ol>#}
+{#                            <li>#}
+{#                                Overall Mechanical Health#}
+{#                            </li>#}
+{#                            <li>#}
+{#                                Overall Electrical Health#}
+{#                            </li>#}
+{#                            <li>#}
+{#                                Vehicle's Cosmetic Condition (Exterior)#}
+{#                            </li>#}
+{#                            <li>#}
+{#                                Vehicle's Cosmetic Condition (Interior)#}
+{#                            </li>#}
+{#                            <li>#}
+{#                                Vehicle's History Check#}
+{#                            </li>#}
+{#                            <li>#}
+{#                                Our Detailed 152 Point Inspection#}
+{#                            </li>#}
+{#                            <li>#}
+{#                                Safety Check#}
+{#                            </li>#}
+{#                            <li>#}
+{#                                Professional Road Test#}
+{#                            </li>#}
+{#                        </ol>#}
+{#                    </div>#}
+{##}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+
+        <div class="home-process">
+            <div>
+                <h2 class="home-process-title">
+                    Buying Process
+                </h2>
+            </div>
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-2 home-process-step active" data-desc="description-1">
+                    <img src="{% static 'img/Search.png' %}" class="process-step-icon"/>
+                    <div class="process-step-label">
+                        <span>Step 1. Search</span>
+                    </div>
+                    <div class="caret">
+                        <svg class="icon-caret" preserveAspectRatio="xMinYMin meet">
+                            <use xlink:href="#icon-caret" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                        </svg>
+                    </div>
+                </div>
+                <div class="col-2 home-process-step" data-desc="description-2">
+                    <img src="{% static 'img/Stack of Photos.png' %}" class="process-step-icon"/>
+                    <div class="process-step-label">
+                        <span>Step 2. Request Photos/Info</span>
+                    </div>
+                    <div class="caret">
+                        <svg class="icon-caret" preserveAspectRatio="xMinYMin meet">
+                            <use xlink:href="#icon-caret" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                        </svg>
+                    </div>
+                </div>
+                <div class="col-2 home-process-step" data-desc="description-3">
+                    <img src="{% static 'img/Assistant Filled.png' %}" class="process-step-icon"/>
+                    <div class="process-step-label">
+                        <span>Step 3. Connect</span>
+                    </div>
+                    <div class="caret">
+                        <svg class="icon-caret" preserveAspectRatio="xMinYMin meet">
+                            <use xlink:href="#icon-caret" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                        </svg>
+                    </div>
+                </div>
+                <div class="col-2 home-process-step" data-desc="description-4">
+                    <img src="{% static 'img/Delivery Filled.png' %}" class="process-step-icon"/>
+                    <div class="process-step-label">
+                        <span>Step 4. Delivery or Pickup</span>
+                    </div>
+                    <div class="caret">
+                        <svg class="icon-caret" preserveAspectRatio="xMinYMin meet">
+                            <use xlink:href="#icon-caret" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                        </svg>
+                    </div>
+                </div>
+                <div class="col-2 home-process-step" data-desc="description-5">
+                    <img src="{% static 'img/Driving Filled.png' %}" class="process-step-icon"/>
+                    <div class="process-step-label">
+                        <span>Step 5. 10 Day Test Drive</span>
+                    </div>
+                    <div class="caret">
+                        <svg class="icon-caret" preserveAspectRatio="xMinYMin meet">
+                            <use xlink:href="#icon-caret" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                        </svg>
+                    </div>
+                </div>
+                <div class="col-1"></div>
+            </div>
+
+            <div class="row home-process-description">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-10">
+                    <div class="process-description" id="description-1">
+                        <h4>
+                            Step 1. Search
+                        </h4>
+                        <p>
+                            Browse Through 1000s of high quality vehicles on our site, we have one of Nation's largest selections.
+                        </p>
+                    </div>
+                    <div class="process-description" id="description-2">
+                        <h4>
+                            Step 2. Request Photos/Info
+                        </h4>
+                        <p>
+                            Select the cars that you like and click "Request photos/info" To get photos, More info and Free Carfax report.
+                        </p>
+                    </div>
+                    <div class="process-description" id="description-3">
+                        <h4>
+                            Step 3. Connect
+                        </h4>
+                        <p>
+                            After receiving your listings, One of our car experts will call you to answer any questions you have or to secure the car for you.
+                        </p>
+                    </div>
+                    <div class="process-description" id="description-4">
+                        <h4>
+                            Step 4. Delivery or Pickup
+                        </h4>
+                        <p>
+                            We will bring the car directly to your drive way! Want to come pick it up? We will cover up to $100 of your Transportation to our facility in Silicon Valley.
+                        </p>
+                    </div>
+                    <div class="process-description" id="description-5">
+                        <h4>
+                            Step 5. 10 Day Test Drive
+                        </h4>
+                        <p>
+                            Every Carboi Car comes with a 10-day money back Guarantee for additional peace of mind! We strongly believe you can't tell much about your new car in a 10 minute test drive around the block so we give you 10 days! Yes we are that confident.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-1"></div>
+            </div>
+
+        </div>
+
+        <div class="clients-saying">
+            <div class="fluid-container">
+                <div class="row">
+                    <div class="col-sm-12 testimonial-wrapper">
+                        <h2>
+                            WHAT <span style="color: #F17424;">CLIENTS</span> SAY
+                        </h2>
+                        <div class="testimonial-inner active">
+                            <div class="testimonial-text">
+                                "Needed a Luxury Car Fast since I had just moved to Silicon Valley from Arizona and Carboi came to my rescue."
+                            </div>
+                            <img src="http://launchkit.mediumra.re/img/avatar-1.png" />
+                            <p class="testimonial-name">
+                                — Chris, B.
+                            </p>
+                        </div>
+                        <div class="testimonial-inner">
+                            <div class="testimonial-text">
+                                "These guys are professional and fun to work with. Shaun was my rep and made sure I got a perfect car at a great price. A supper happy customer. Definitely recommend."
+                            </div>
+                            <img src="http://launchkit.mediumra.re/img/avatar-2.png" />
+                            <p class="testimonial-name">
+                                — Jared, L.
+                            </p>
+                        </div>
+                        <div class="testimonial-inner">
+                            <div class="testimonial-text">
+                                "All I can say is "THANK YOU" You guys made my dream turn into reality. these guys are amazing, they really put time and effort to make sure your experience is unparalleled ! Give them a try."
+                            </div>
+                            <img src="http://launchkit.mediumra.re/img/avatar-3.png" />
+                            <p class="testimonial-name">
+                                — Christie, T.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{ block.super }}
+    </div>
+{% endblock %}
+
+{% block 'js' %}
+    <script>
+        var testimonial_counter = 0;
+        function testimonial_transitions() {
+            $el1 = $('.testimonial-inner.active').removeClass('active');
+            $el1.show().fadeOut(400);
+
+            setTimeout(function(){
+                $el = $('.testimonial-inner').eq(testimonial_counter).addClass('active');
+                $el.hide().fadeIn(800);
+            }, 401);
+
+            testimonial_counter += 1;
+            if ( testimonial_counter % $('.testimonial-inner').length == 0 ) {
+                testimonial_counter = 0;
+            }
+
+            setTimeout(function(){
+                testimonial_transitions();
+            }, 8000);
+        }
+
+        $(document).ready(function(){
+            testimonial_transitions();
+            hndle_rsze();
+
+{#            if (localStorage.getItem('memorialday') == null)#}
+{#                $('#memorial-day-strip').css('display', 'block');#}
+        });
+
+{#        $('.close').click(function () {#}
+{#            localStorage.setItem('memorialday', 'true');#}
+{#        });#}
+
+        $('.home-process-step').click(function(){
+            $('.process-description').css('display', 'none');
+            $('.caret').css('display', 'none')
+            $(this).find('.caret').css('display', 'block');
+            $('.home-process-step').removeClass('active');
+            $(this).addClass('active');
+            $('#' + $(this).attr('data-desc')).css('display', 'block')
+        });
+
+        $('.home-make-select').change(function () {
+            $('.ajax_model_option').remove();
+            $.ajax({
+                'url': '{% url 'ajax_load_models' %}',
+                'type': 'POST',
+                'data': 'make=' + $(this).val() + '&csrfmiddlewaretoken={{csrf_token}}',
+                success: function(data){
+                    for (var i in data.content['models']) {
+                        var option = data.content['models'][i];
+                        $('.home-model-select').append('<option class="ajax_model_option" value="' + option['name'] + '">' + option['name'] + '</option>');
+                    }
+                }
+            });
+        });
+        $('#model-select').change(function () {
+            $('.filter-button').click();
+        });
+
+        $('.icon-scroll').click(function (e) {
+            e.preventDefault();
+            $('html, body').animate({
+                scrollTop: $($.attr(this, 'href')).offset().top
+            }, 1000);
+        });
+
+{#        $('.memorial-day-scroll').click(function (e) {#}
+{#            e.preventDefault();#}
+{#            $('html, body').animate({#}
+{#                scrollTop: $($.attr(this, 'href')).offset().top#}
+{#            }, 1000);#}
+{#        });#}
+
+        function hndle_rsze(){
+            if ($(window).width() < 992) {
+                $('#header-container').removeClass('container').addClass('fluid-container');
+            }
+            else {
+                $('#header-container').removeClass('fluid-container').addClass('container');
+            }
+        }
+
+        $(window).resize(function(){
+            hndle_rsze();
+        });
+
+    </script>
+{% endblock %}

@@ -1,0 +1,6 @@
+First name: {{ first_name }}
+Last name: {{ last_name }}
+Phone number: {{ phone_number }}
+Email: {{ email }}
+
+Comment: {{ comment }}

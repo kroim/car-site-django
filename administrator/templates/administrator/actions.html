@@ -1,0 +1,67 @@
+{% extends 'administrator/layout/layout.html' %}
+{% block 'title' %}Actions{% endblock %}
+{% block 'main' %}
+    <div class="container">
+        <div>
+            <form action="#" method="post" style="display: inline-block;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="calculate_mo_prices" />
+                <button class="btn btn-danger">
+                    Calculate mo prices
+                </button>
+            </form>
+            <form action="#" method="post" style="display: inline-block;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="calculate_bg_prices" />
+                <button class="btn btn-danger">
+                    Calculate bg prices
+                </button>
+            </form>
+            <form action="#" method="post" style="display: inline-block;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="calculate_ove_prices" />
+                <button class="btn btn-danger">
+                    Calculate ove prices
+                </button>
+            </form>
+            <form action="#" method="post" style="display: inline-block;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="calculate_ade_prices" />
+                <button class="btn btn-danger">
+                    Calculate ade prices
+                </button>
+            </form>
+        </div>
+        <hr/>
+        <div>
+            <form action="#" method="post" style="display: inline-block;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="mo_all" />
+                <button class="btn btn-danger">
+                    mo All
+                </button>
+            </form>
+            <form action="#" method="post" style="display: inline-block;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="bg_all" />
+                <button class="btn btn-danger">
+                    bg All
+                </button>
+            </form>
+            <form action="#" method="post" style="display: inline-block;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="ove_all" />
+                <button class="btn btn-danger">
+                    ove All
+                </button>
+            </form>
+            <form action="#" method="post" style="display: inline-block;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="ade_all" />
+                <button class="btn btn-danger">
+                    ade All
+                </button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

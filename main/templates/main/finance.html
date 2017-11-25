@@ -1,0 +1,81 @@
+{% extends 'main/layout/layout.html' %}
+{% load staticfiles %}
+
+{% block 'title' %}Finance {{ block.super }}{% endblock %}
+
+{% block 'main' %}
+<div class="wide-title finance-wide-title">
+    <div class="wide-transparent-layer"></div>
+    <h1>
+        Transparent Online Financing
+    </h1>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <p class="center-desc">
+                Whether you have credit or not, Carboi can offer excellent financing and refinancing options. Carboi will assist you to secure the perfect financing deal. Submit your credit application online and get a decision in just a few hours. If approved, your rate is locked in for any Carboi Certified vehicle you purchase.
+            </p>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+    <div class="divider"></div>
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <div class="center-desc">
+                <h2 class="desc-title">
+                    Car Loans with Good, Fair and Bad Credit
+                </h2>
+                <p>
+                    Whether you have credit or not, Carboi can offer excellent financing and refinancing options. Carboi will assist you to secure the perfect financing deal. Order your Carboi Certified Car, submit your credit application online and get a decision in one business day. If approved, your rate is locked in for the Carboi Certified vehicle you purchased.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+    <div class="divider"></div>
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <div class="center-desc">
+                <h2 class="desc-title">
+                    Financing Time Line
+                </h2>
+                <div class="finance-timeline-wrapper">
+                    <div id="finance-timeline-step1">
+                        Complete our secure and easy online application
+                    </div>
+                    <div id="finance-timeline-step2">
+                        Auto Loan Specialist will contact you and go over terms
+                    </div>
+                    <div id="finance-timeline-step3">
+                        If approved, receive an email with an offer
+                    </div>
+                    <div id="finance-timeline-step4">
+                        Submit your documents to Carboi and take your car home
+                    </div>
+                    <img class="img-fluid" src="{% static 'img/finance_timeline.png' %}" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="call-to-action-wrapper">
+                <a href="https://secure.carsforsale.com/ssfinance.aspx?jesxel=698054" target="_blank">
+                    <button class="btn apply-now-btn">
+                        APPLY NOW
+                    </button>
+                </a>
+                <p class="needtotalk-label">
+                    Need to Talk to a Real Person? 855-966-6694
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{{ block.super }}
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'main/layout/layout.html' %}
+{% load staticfiles %}
+
+{% block 'title' %}FAQ {{ block.super }}{% endblock %}
+
+{% block 'main' %}
+
+<div class="wide-title faq-wide-title">
+    <div class="wide-transparent-layer"></div>
+    <h1>Frequently Asked Questions</h1>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <ul class="faq-category">
+                {% for faq_category, faqs in faqs_list %}
+                <li>
+                    <a href="#FaqCategory{{ faq_category.id }}">{{ faq_category.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-9">
+            {% for faq_category, faqs in faqs_list %}
+            <div class="faq-wrapper">
+                <h4 class="faq-header" id="Home_Carboi_Works">
+                    {{ faq_category.name }}
+                </h4>
+
+                {% for faq in faqs %}
+                <div class="faq">
+                    <div id="accordion" role="tablist" aria-multiselectable="true">
+                      <div>
+                        <div role="tab">
+                          <h5 class="mb-0">
+                            <a class="faq-question" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ faq.id }}" aria-expanded="true" aria-controls="collapseOne">
+                                <i class="fa fa-angle-down"></i> {{ faq.question }}
+                            </a>
+                          </h5>
+                        </div>
+
+                        <div id="collapse{{ faq.id }}" class="collapse" role="tabpanel" aria-labelledby="headingOne">
+                          <div class="faq-ans-block">
+                            {{ faq.answer|safe }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{{ block.super }}
+{% endblock %}

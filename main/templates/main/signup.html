@@ -1,0 +1,14 @@
+
+{% extends 'main/layout/layout.html' %}
+{% load staticfiles %}
+{% block 'title' %}Sign Up{% endblock %}
+
+{% block 'main' %}
+<div style="max-width: 600px; margin: 100px auto; 0 auto; padding:50px; background-color: #5ba1e6;">
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-success form-control" type="submit">Sign up</button>
+  </form>
+  </div>
+{% endblock %}

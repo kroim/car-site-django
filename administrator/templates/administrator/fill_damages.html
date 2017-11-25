@@ -1,0 +1,158 @@
+{% extends 'administrator/layout/layout.html' %}
+{% block 'title' %}Damages ({{ damage_count }}){% endblock %}
+{% block 'main' %}
+    <div class="container">
+        <table class="table">
+            <thead>
+            <tr>
+                {#                <th>id</th>#}
+                <th>Car model</th>
+                <th>Damage</th>
+                <th>Condition</th>
+                <th>Severity</th>
+                <th>Rule</th>
+                <th>Car</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for car in cars %}
+                {% for damage in car.damage_set.all %}
+                    {% if damage.estimated_price == None %}
+                        <tr>
+                            {#                            <td>#}
+                            {#                                {{ damage.id }}#}
+                            {#                            </td>#}
+                            <td class="car_model_col">
+                                {{ car.car_model }}
+                            </td>
+                            <td class="part_col">
+                                {{ damage.part }}
+                            </td>
+                            <td class="condition_col">
+                                {{ damage.condition }}
+                            </td>
+                            <td class="severity_col">
+                                {{ damage.severity }}
+                            </td>
+                            <td>
+                                <button class="btn btn-success add_rule" data-car-id="{{ car.id }}">add rule</button>
+                                {#                                <input type="number" value="{{ damage.estimated_price }}" name="{{ damage.id }}"/>#}
+                                {#                                {{ damage.mannual }}#}
+                            </td>
+                            <td>
+                                <a href="{% url 'search_car' %}?id={{ car.id }}">View Car</a>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block 'js' %}
+    <script>
+        $('.add_rule').click(function (e) {
+            var car_model = $(this).parent().parent().find('.car_model_col').html().replace(/\s+/g, ' ').trim();
+            var part = $(this).parent().parent().find('.part_col').html().replace(/\s+/g, ' ').trim();
+            var condition = $(this).parent().parent().find('.condition_col').html().replace(/\s+/g, ' ').trim();
+            var severity = $(this).parent().parent().find('.severity_col').html().replace(/\s+/g, ' ').trim();
+
+            var dialog = bootbox.dialog({
+                message: "<h4>Add New Damage Rule</h4>\
+                <table class='table'>\
+                    <tr>\
+                    <th>Car model</th><th>Damage</th><th>Condition</th><th>Severity</th>\
+                    </tr>\
+                    <tr>\
+                    <td>"
+                + car_model +
+                "</td>\
+                <td>"
+                + part +
+                "</td>\
+                <td>"
+                + condition +
+                "</td>\
+                <td>"
+                + severity +
+                "</td>\
+                </tr>\
+                </table>\
+                <form action='#' method='post' class='add-damage-rule-forms'>\
+                {% csrf_token %}\
+                <input type='hidden' name='car_id' value='" + $(this).attr('data-car-id') + "' />\
+            </div>\
+        <table>\
+        <hr>\
+            <div class='form-group'>\
+                <div>\
+                    <label>Damage</label> <input type='radio' checked=checked name='consider_damage' value='1' />\
+                    ---- OR ----    all damages <input type='radio' name='consider_damage' value='0' />\
+                </div>\
+                <input type='text' name='part' value='" + part + "'/>\
+            </div>\
+            <hr>\
+            <div class='form-group'>\
+                <div>\
+                    <label>Condition</label> <input type='radio' checked=checked name='consider_condition' value='1' />\
+                    ---- OR ----    all conditions <input type='radio' name='consider_condition' value='0' />\
+                </div>\
+                <input type='text' name='condition' value='" + condition + "'/>\
+            </div>\
+            <hr>\
+            <div class='form-group'>\
+                <div>\
+                <label>Severity</label> <input type='radio' checked=checked name='consider_severity' value='1' />\
+                    ---- OR ----    all severities <input type='radio' name='consider_severity' value='0' />\
+                </div>\
+                <div>\
+                    <input type='radio' name='severity_type' value='text' checked=checked />\
+                    <input type='text' name='severity' value='" + severity + "'/> (Text)\
+                </div>\
+                <div>\
+                    <input type='radio' name='severity_type' value='number' />\
+                    <select name='number_operation'>\
+                        <option value='G'>Greater than</option>\
+                        <option value='GE'>Greater than or equal</option>\
+                        <option value='L'>Less than</option>\
+                        <option value='LE'>Less than equal</option>\
+                    </select>\
+                    <input type='number' step='0.001' name='severity_number' value='number'/> (Number)\
+                </div>\
+                <div>\
+                    <input type='radio' name='severity_type' value='inch' />\
+                    <select name='inch_operation'>\
+                        <option value='G'>Greater than</option>\
+                        <option value='GE'>Greater than or equal</option>\
+                        <option value='L'>Less than</option>\
+                        <option value='LE'>Less than equal</option>\
+                    </select>\
+                    <input type='number' step='0.001' name='severity_inch' value='inch'/>\
+                    (Inch)\
+                </div>\
+            </div>\
+            <div class='form-group'>\
+                <label>PRICE</label>\
+                <input class='form-control' type='number' required=required name='price'/>\
+            </div>\
+            <button type='submit' class='btn btn-success btn-submit-request'>\
+                Submit Rule\
+            </button>\
+        </table>\
+        \
+    </form>",
+            });
+        });
+    </script>
+
+    <script>
+        $(document).on('submit', '.add-damage-rule-forms', function (e) {
+            var btn = $(this).find('button[type=submit]')
+            btn.attr('disabled', 'disabled');
+            btn.text('Please Wait...');
+        });
+    </script>
+
+{% endblock %}
