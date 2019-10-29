@@ -12,7 +12,7 @@ idna==2.2
 kombu==4.0.2
 olefile==0.44
 packaging==16.8
-Pillow==4.0.0
+Pillow==6.2.0
 psycopg2==2.7.1
 pyparsing==2.2.0
 pytz==2017.2
