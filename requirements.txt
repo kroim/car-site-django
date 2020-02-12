@@ -3,7 +3,7 @@ appdirs==1.4.3
 beautifulsoup4==4.5.1
 billiard==3.5.0.2
 celery==4.1.0
-Django==1.10.7
+Django==1.11.28
 django-dotenv==1.4.1
 djangoajax==2.3.7
 EasyProcess==0.2.3
